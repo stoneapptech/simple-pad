@@ -51,13 +51,13 @@
 
         $("#pad").addEventListener("input", function(e) {
             let el = e.target;
-            if (el.textContent) localStorage.setItem("pad_content", el.textContent);
+            if (el.textContent) localStorage.setItem("pad_content", el.innerText);
             else localStorage.removeItem("pad_content");
             $("#counter").textContent = `length: ${$("#pad").textContent.length}`;
         });
 
         if (localStorage.getItem("pad_content")) {
-            $("#pad").textContent = localStorage.getItem("pad_content");
+            $("#pad").innerText = localStorage.getItem("pad_content");
         }
 
         $("#counter").textContent = `length: ${$("#pad").textContent.length}`;
