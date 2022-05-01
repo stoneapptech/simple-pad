@@ -49,6 +49,18 @@
     <script>
         const $ = (selector) => { return document.querySelector(selector); }
 
+        function downloadFile(fileName, fileContent, contentType) {
+            let downloadElement = document.createElement("a");
+            downloadElement.download = fileName;
+            downloadElement.href = `data:${contentType};charset=UTF-8,${fileContent}`;
+            downloadElement.style = 'position: absolute; top: 0; right: 0; left: 0; bottom: 0; visibility: hidden;';
+
+            downloadElement.addEventListener("click", () => { document.body.removeChild(downloadElement) });
+            document.body.appendChild(downloadElement);
+
+            downloadElement.click();
+        }
+
         $("#pad").addEventListener("input", function(e) {
             let el = e.target;
             if (el.textContent) localStorage.setItem("pad_content", el.innerText);
@@ -61,6 +73,15 @@
         }
 
         $("#counter").textContent = `length: ${$("#pad").innerText.length}`;
+
+        document.body.addEventListener("keydown", (ev) => {
+            // Ctrl + S => save file
+            if (ev.ctrlKey && ev.key == "s") {
+                ev.preventDefault();
+
+                downloadFile("pad.txt", $("#pad").innerText, "text/plain");
+            }
+        });
     </script>
 </body>
 </html>
