@@ -53,14 +53,14 @@
             let el = e.target;
             if (el.textContent) localStorage.setItem("pad_content", el.innerText);
             else localStorage.removeItem("pad_content");
-            $("#counter").textContent = `length: ${$("#pad").textContent.length}`;
+            $("#counter").textContent = `length: ${$("#pad").innerText.length}`;
         });
 
         if (localStorage.getItem("pad_content")) {
             $("#pad").innerText = localStorage.getItem("pad_content");
         }
 
-        $("#counter").textContent = `length: ${$("#pad").textContent.length}`;
+        $("#counter").textContent = `length: ${$("#pad").innerText.length}`;
     </script>
 </body>
 </html>
