@@ -49,16 +49,24 @@
     <script>
         const $ = (selector) => { return document.querySelector(selector); }
 
-        function downloadFile(fileName, fileContent, contentType) {
+        function downloadFile(fileName, fileContent, fileType) {
+            function createBlobUrl() {
+                return URL.createObjectURL(new Blob([fileContent], { type: fileType }));
+            }
+
             let downloadElement = document.createElement("a");
+            let url = createBlobUrl();
+
             downloadElement.download = fileName;
-            downloadElement.href = `data:${contentType};charset=UTF-8,${fileContent}`;
+            downloadElement.href = url;
             downloadElement.style = 'position: absolute; top: 0; right: 0; left: 0; bottom: 0; visibility: hidden;';
 
-            downloadElement.addEventListener("click", () => { document.body.removeChild(downloadElement) });
             document.body.appendChild(downloadElement);
 
             downloadElement.click();
+
+            document.body.removeChild(downloadElement);
+            URL.revokeObjectURL(url);
         }
 
         $("#pad").addEventListener("input", function(e) {
