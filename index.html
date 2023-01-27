@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet"> 
     <title>Simple Pad</title>
     <style>
         * {
@@ -14,12 +17,13 @@
             width: 100%;
             margin: 0;
             padding: 0;
+            font-family: Noto Sans TC, sans-serif;
         }
 
         .container {
             width: 100%;
             height: 100%;
-            padding: 1em 1.5em;
+            padding: 0;
             margin: auto;
             display: flex;
             justify-content: center;
@@ -33,18 +37,35 @@
             width: 100%;
             overflow: auto;
             padding: 1em;
-            border: 2px solid black;
+            border: 3px solid #c3c3c3;
+        }
+
+        #status {
+            width: 100%;
+            padding: .25rem;
+            display: grid;
+            grid-template-columns: 150px 1fr minmax(min-content, 100px);
+            background-color: #e3e3e3;
+        }
+
+        #filename {
+            grid-column: 1;
         }
 
         #counter {
-            align-self: flex-end;
+            grid-column: 3;
+            white-space: pre;
+            text-align: end;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div id="pad" contenteditable="true"></div>
-        <span id="counter"></span>
+        <div id="status">
+            <input id="filename" type="text" placeholder="pad.txt">
+            <div id="counter"></div>
+        </div>
     </div>
     <script>
         const $ = (selector) => { return document.querySelector(selector); }
@@ -69,25 +90,29 @@
             URL.revokeObjectURL(url);
         }
 
+        function updateCounter() {
+            $("#counter").textContent = `length: ${$("#pad").innerText.length}`;
+        }
+
         $("#pad").addEventListener("input", function(e) {
             let el = e.target;
-            if (el.textContent) localStorage.setItem("pad_content", el.innerText);
+            if (el.innerText) localStorage.setItem("pad_content", el.innerText);
             else localStorage.removeItem("pad_content");
-            $("#counter").textContent = `length: ${$("#pad").innerText.length}`;
+            updateCounter();
         });
 
         if (localStorage.getItem("pad_content")) {
             $("#pad").innerText = localStorage.getItem("pad_content");
         }
 
-        $("#counter").textContent = `length: ${$("#pad").innerText.length}`;
+        updateCounter();
 
         document.body.addEventListener("keydown", (ev) => {
             // Ctrl + S => save file
             if (ev.ctrlKey && ev.key == "s") {
                 ev.preventDefault();
 
-                downloadFile("pad.txt", $("#pad").innerText, "text/plain");
+                downloadFile($("#filename").value || "pad.txt", $("#pad").innerText, "text/plain");
             }
         });
     </script>
